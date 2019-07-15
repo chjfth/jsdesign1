@@ -157,14 +157,20 @@ ColumnDrag.prototype.mousemove = function (e) {
 
 ColumnDrag.prototype.mouseup = function (e) {
     e = e ? e : window.event;
-    var elm = e.target? e.target : e.srcElement;
+    var elm = e.target? e.target : e.srcElement; // e.target 看起来是先前 mousedown 时击中的那个元素, 而非当前鼠标指针下方的元素.
     elm = elm.nodeName == "A" ? elm.parentNode : elm;
 
     this.state = null;
-//console.log(".mouseup");   
+//console.log(".mouseup");
+	if(elm.cIdx==undefined) { 
+		// clicking on blank area cause `undefined` here
+		return;
+	}
+	
     var col = this.cols[elm.cIdx];
     col.className = "dropped";
     operaRefresh();
+
     var that = this;  // points to a ColumnDrag object
     window.setTimeout(function () {
         that.from.className = that.from.className.replace(/ down/g, "");
