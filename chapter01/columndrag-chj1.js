@@ -4,7 +4,7 @@ function ColumnDrag(id) {
     this.tbl = document.getElementById(id);
     if (this.tbl && this.tbl.nodeName == "TABLE") {
         this.state = null;
-//        this.prevX = null;
+        this.prevX = null;
         this.cols = this.tbl.getElementsByTagName("col");
         this.makeDraggable();
     }
@@ -47,8 +47,10 @@ ColumnDrag.prototype.makeDraggable = function () {
         };
         document.onmouseup = function () {
             var e = cgobj.clearAllHeadings();
-            if (e) 
+            if (1) //(e) 
             	cgobj.mouseup(e);
+            else
+            	console.log("Mouseup missing!!");
         };
         document.onmouseout = function (e) {
             // [2019-07-15] 此事件处理看起来并无必要. 原作者担心的可能是: 用户在 <th> 上按下鼠标,
@@ -98,6 +100,7 @@ ColumnDrag.prototype.mousedown = function (e) {
     elm = elm.nodeName == "A" ? elm.parentNode : elm; // elm 将指向 <th>
     
     // set state and clicked "from" element
+//console.log(".mouse-down");
     this.state = "drag";
     elm.className += " down";
     this.cols[elm.cIdx].className = "drag";
@@ -111,7 +114,7 @@ ColumnDrag.prototype.mousemove = function (e) {
 	// 按设计, this 指向一个 ColumnDrag 对象, 每个 ColumnDrag 对象关联着一个 <table> .
 	
     e = e ? e : window.event;
-    var x = e.clientX ? e.clientX : e.pageX;
+    var x = e.clientX ? e.clientX : e.pageX;  // .clientX is a MouseEvent property
     var elm = e.target? e.target : e.srcElement; // elm 是触发元素, 某个 <a>
 
 	// 概述: 假设我们刚才启动了 Q3 的拖动, 那么, 当鼠标指针离开 Q3 当前的占地时, column-move 代码就应该行动了.
@@ -121,7 +124,11 @@ ColumnDrag.prototype.mousemove = function (e) {
         var from = this.from.cIdx;
         var to = elm.cIdx; // `undefined` if dragging out of boundary
         
-        if (from!==undefined && to!==undefined) { // Chj fix here
+        if (
+        	from!==undefined && to!==undefined && // Chj fix here
+        	( e.fromKeyboard || (x>this.prevX && to>from) || (x<this.prevX && to<from) )  // see book p34 ③ explanation
+        	) 
+        { 
             
             // highlight column
             this.cols[from].className = "";
@@ -145,7 +152,7 @@ ColumnDrag.prototype.mousemove = function (e) {
             }
         }
     }
-//	this.prevX = x; // Chj: x is not necessary now.
+	this.prevX = x;
 }
 
 ColumnDrag.prototype.mouseup = function (e) {
@@ -154,6 +161,7 @@ ColumnDrag.prototype.mouseup = function (e) {
     elm = elm.nodeName == "A" ? elm.parentNode : elm;
 
     this.state = null;
+//console.log(".mouseup");   
     var col = this.cols[elm.cIdx];
     col.className = "dropped";
     operaRefresh();
@@ -180,11 +188,12 @@ ColumnDrag.prototype.keyup = function (e) {
             this.mousedown({target:elm_a});
             
             var prevCellIdx = elm.cIdx == 0 ? 0 : elm.cIdx - 1;
-//            this.prevX = 2;
+//          this.prevX = 2;
             this.mousemove(
                 {
                     target: headings[prevCellIdx],
-                    clientX: 1
+//                  clientX: 1,
+                    fromKeyboard : true,
                 }
             );
             
@@ -197,12 +206,13 @@ ColumnDrag.prototype.keyup = function (e) {
             
             // -2 for IE fix phantom TDs
             var nextCellIdx = elm.cIdx == headings.length-2 ? headings.length-2 : elm.cIdx + 1;
-//            this.prevX = 0;
+//          this.prevX = 0;
             
             this.mousemove(
                 {
                     target: headings[nextCellIdx],
-                    clientX: 1
+//                  clientX: 1,
+                    fromKeyboard: true,
                 }
             );
             this.mouseup({target: elm_a});
