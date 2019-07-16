@@ -72,7 +72,7 @@ a:active {
 body.grabbing,
 body.grabbing * {
 	cursor: grabbing; 
-}	/* Targetting `body.grabbing *` seems to be a must, why? * /
+}	/* Targetting `body.grabbing *` seems to be a must, why? */
 
 col.drag {
 	background-color: #eee;
