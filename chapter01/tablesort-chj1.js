@@ -1,4 +1,4 @@
-function TableSort(id) {
+function TableSort(id) { // the TableSort ctor
     this.tbl = document.getElementById(id);
     this.lastSortedTh = null;
     if (this.tbl && this.tbl.nodeName == "TABLE") {
@@ -51,7 +51,7 @@ TableSort.prototype.sortCol = function (el) {
          * table's rows.
          */
         var num = content.replace(/(\$|\,|\s)/g, "");
-          if (parseFloat(num) == num) { 
+        if (parseFloat(num) == num) { 
             numeric[nIdx++] = {
                 value: Number(num),
                 row: rows[i]
