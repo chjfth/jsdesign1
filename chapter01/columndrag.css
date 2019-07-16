@@ -58,6 +58,22 @@ table thead th.down {
 	background-color: #ddbc88;
 }
 
+table thead th.down {
+	color: red;
+	cursor: grabbing;
+}
+
+/* // this rule seems no effect
+a:active { 
+	cursor: grabbing;
+}
+*/
+
+body.grabbing,
+body.grabbing * {
+	cursor: grabbing; 
+}	/* Targetting `body.grabbing *` seems to be a must, why? * /
+
 col.drag {
 	background-color: #eee;
 }

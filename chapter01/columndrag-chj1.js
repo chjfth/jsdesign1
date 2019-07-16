@@ -107,6 +107,9 @@ ColumnDrag.prototype.mousedown = function (e) {
     this.from = elm; 
     this.from_a = elm_a; // Chj add. `this.from_a` will be compared with <a> in .mousemove()
     operaRefresh();
+    
+    document.body.classList.add("grabbing"); 
+    	// Chj: so that mouse cursor changes to a grabbing hand globally when dragging.
 }
 
 ColumnDrag.prototype.mousemove = function (e) {
@@ -179,6 +182,8 @@ ColumnDrag.prototype.mouseup = function (e) {
         }
 	    operaRefresh();
     }, 1000);
+
+    document.body.classList.remove("grabbing");
 }
 
 ColumnDrag.prototype.keyup = function (e) {
