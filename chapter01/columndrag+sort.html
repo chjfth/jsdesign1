@@ -2,13 +2,16 @@
 
 <html>
     <head>
-        <title>Column Drag</title>
+        <title>Column Drag + click to Sort</title>
         <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="tablesort.css" />
         <link rel="stylesheet" type="text/css" href="columndrag.css" />
+		<script  type="text/javascript" src="tablesort-chj1.js"></script>
 		<script  type="text/javascript" src="columndrag-chj1.js"></script>
 		<script type="text/javascript">
 		    window.onload = function () {
 		        new ColumnDrag("sales");
+		        new TableSort("sales");
 		    }
 		</script>
     </head>

@@ -59,7 +59,6 @@ table thead th.down {
 }
 
 table thead th.down {
-	color: red;
 	cursor: grabbing;
 }
 

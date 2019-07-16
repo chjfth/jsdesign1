@@ -13,20 +13,26 @@ function TableSort(id) { // the TableSort ctor
 }
 
 TableSort.prototype.makeSortable = function () {
+    var tsobj = this;
     var headings = this.tbl.tHead.rows[0].cells;
     for (var i=0; headings[i]; i++) {
 	    headings[i].cIdx = i;
         var a = document.createElement("a");
         a.href = "#";
         a.innerHTML = headings[i].innerHTML;
-        var tsobj = this;
-        a.onclick = function () {
-            tsobj.sortCol(this);
-            return false;
+
+		if(!headings[i].firstElementChild || headings[i].firstElementChild.tagName != "A") {
+			// Only do <a> wrapping when there isn't already an <a>
+        	headings[i].innerHTML = "";
+        	headings[i].appendChild(a);
         }
-        headings[i].innerHTML = "";
-        headings[i].appendChild(a);
-    }
+
+		var newa = headings[i].firstElementChild;
+        newa.addEventListener("click", function (event) {
+            tsobj.sortCol(this);
+            event.preventDefault();
+        });
+    } // for
 }
 
 TableSort.prototype.sortCol = function (el) {
@@ -78,7 +84,7 @@ TableSort.prototype.sortCol = function (el) {
         if (th.className.match("dsc")) {
             th.className = th.className.replace(/dsc/, "asc");
         } else {
-            th.className += "asc";
+            th.className += " asc"; // Chj: a leading " " is crucial to coexist with columndrag.js
         }
     }
     

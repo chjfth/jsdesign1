@@ -24,13 +24,10 @@ ColumnDrag.prototype.makeDraggable = function () {
     var headings = this.tbl.tHead.rows[0].cells;
     for (var i=0; headings[i]; i++) {
         headings[i].cIdx = i; // Safari 2.0.4 "cellIndex always equals 0" workaround
-        
+
         var a = document.createElement("a");
             a.href = "#";
             a.innerHTML = "&larr; " + headings[i].innerHTML + " &rarr;";
-            a.onclick = function () {
-                return false;
-            }
         
         headings[i].className += " draggable";
         
@@ -76,10 +73,18 @@ ColumnDrag.prototype.makeDraggable = function () {
         headings[i].onmouseover = addHover;
         headings[i].onmouseout = removeHover;
 
-        headings[i].innerHTML = "";
-        headings[i].appendChild(a);
+		if(!headings[i].firstElementChild || headings[i].firstElementChild.tagName != "A") {
+			// Only do <a> wrapping when there isn't already an <a>
+        	headings[i].innerHTML = "";
+        	headings[i].appendChild(a);
+		}
 
-    }
+		var newa = headings[i].firstElementChild;
+        newa.addEventListener("click", function (event) {
+            event.preventDefault();
+        });
+		
+    } // for 
 }
 
 ColumnDrag.prototype.clearAllHeadings = function (){
